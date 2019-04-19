@@ -1,0 +1,50 @@
+@using Microsoft.AspNetCore.Http;
+@model UserActivityRel;
+
+<a href="/Activities" class="btn btn-secondary">Home</a>
+
+@{
+                        int? UserId = @Context.Session.GetInt32("UserID");
+                        int createdBy = @Model.Activity.CreatedBy;
+                        if(UserId == createdBy){
+                            <a href="/DeleteActivity/@Model.Activity.ActivityId" class="btn btn-secondary">Delete</a>
+                        }
+                        bool going = false;
+                        foreach(var guest in @Model.Activity.UserActivity)
+                        {
+                            if(guest.UserId == UserId){
+                                going = true;
+                            }
+                        }
+                        if(going){
+                            <a href="/DeleteJoin/@Model.Activity.ActivityId" class="btn btn-secondary">Leave</a>
+                        }
+                        if(!going && UserId != createdBy){
+                            <a href="/JoinActivity/@Model.Activity.ActivityId" class="btn btn-secondary">Join</a>
+                        }
+}
+
+<br><br>
+<h5> <b> Activity Title:</b> @Model.Activity.Title</h5>
+
+@{
+    string creator = "";
+    foreach(var u in @Model.Users){
+        if(u.UserId == createdBy){
+            creator = u.Name;
+        }
+    }
+}
+
+<h5><b> Event Coordinator:</b> @creator</h5>
+
+<h5> <b> Description:</b> </h5>
+<p style="padding-left: 20px;">@Model.Activity.Description</p>
+
+<h5>Participants</h5>
+<ul>
+@foreach (var part in @Model.Activity.UserActivity)
+{
+    <li>@part.User.Name</li>
+}
+</ul>

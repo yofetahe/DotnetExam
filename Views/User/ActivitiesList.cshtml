@@ -1,0 +1,56 @@
+@using Microsoft.AspNetCore.Http;
+@model UserActivityRel;
+
+<a href="GetActivityRegForm" class="btn btn-secondary">New Activity</a>
+<br><br>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Activity</th>
+            <th>Date and Time</th>
+            <th>Duration</th>
+            <th>Event Coordinator</th>
+            <th>No of Participant</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Activity in @Model.activities)
+        {
+            <tr>
+                <th>
+                    <a href="ActivityDetail/@Activity.ActivityId">
+                        @Activity.Title
+                    </a>
+                </th>
+                <th>@Activity.ActivityDate.Date.ToString("dd/MM/yyyy") -
+                    @Activity.ActivityTime</th>
+                <th>@Activity.Duration @Activity.DurationTag</th>
+                <th>@Activity.User.Name </th>
+                <th> @Activity.UserActivity.Count </th>
+                <th>
+                    @{
+                        int? UserId = @Context.Session.GetInt32("UserID");
+                        int createdBy = @Activity.CreatedBy;
+                        if(UserId == createdBy){
+                            <a href="DeleteActivity/@Activity.ActivityId">Delete</a>
+                        }
+                        bool going = false;
+                        foreach(var guest in @Activity.UserActivity)
+                        {
+                            if(guest.UserId == UserId){
+                                going = true;
+                            }
+                        }
+                        if(going){
+                            <a href="DeleteJoin/@Activity.ActivityId">Leave</a>
+                        }
+                        if(!going && UserId != createdBy){
+                            <a href="JoinActivity/@Activity.ActivityId">Join</a>
+                        }
+                    }
+                </th>
+            </tr>
+        }
+    </tbody>
+</table>

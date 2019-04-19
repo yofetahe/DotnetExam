@@ -1,0 +1,47 @@
+@model NewActivity
+<a href="/Activities" class="btn btn-secondary">Home</a>
+<br><br>
+<div class="header-title">
+    <p> Create an Activity </p>
+</div>
+
+<form action="NewActivity" method="post" class="newActivity">
+    <div class="form-group">
+        <span asp-validation-for="Title" class="errorMessage"></span>
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="ActivityTime" class="errorMessage"></span>
+        <label asp-for="ActivityTime"></label>
+        <input asp-for="ActivityTime" class="form-control">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="ActivityDate" class="errorMessage"></span>
+        <label asp-for="ActivityDate"></label>
+        <input asp-for="ActivityDate" class="form-control">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Duration" class="errorMessage"></span>
+        <label asp-for="Duration"></label>
+        <table>
+            <tr><td>
+                <input asp-for="Duration" class="form-control">
+            </td><td>
+                <select asp-for="DurationTag" class="form-control">
+            <option>Hours</option>
+            <option>Minutes</option>
+            <option>Days</option>
+        </select>
+            </td></tr>
+        </table>
+        
+        
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="Description" class="errorMessage"></span>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" id="" cols="30" rows="5" class="form-control"></textarea>
+    </div>
+    <button class="btn btn-success"> Create </button>
+</form>

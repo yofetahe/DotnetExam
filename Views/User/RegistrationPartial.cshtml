@@ -1,0 +1,24 @@
+@model RegUser
+<form asp-action="registration" asp-controller="User" method="post">
+    <div class="form-group">
+        <span asp-validation-for="Name" class="errorMessage"></span>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="RegEmail" class="errorMessage"></span>
+        <label asp-for="RegEmail"></label>
+        <input asp-for="RegEmail" class="form-control">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="RegPassword" class="errorMessage"></span>
+        <label asp-for="RegPassword"></label>
+        <input asp-for="RegPassword" class="form-control">
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="RegConfirm" class="errorMessage"></span>
+        <label asp-for="RegConfirm"></label>
+        <input asp-for="RegConfirm" class="form-control">
+    </div>
+    <button class="btn btn-success"> Register </button>
+</form>
