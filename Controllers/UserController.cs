@@ -53,6 +53,32 @@ namespace DotNet_Belt.Controllers
             return View("Index");
         }
 
+        public bool IsPasswordValid(string password)
+        {
+            int[] num = new int[]{1,2,3,4,5,6,7,8,9,0};
+            char[] ch = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'};
+            char[] special = new char[]{'!','@','#'};
+            int numCounter = 0, charCounter = 0, specialCounter = 0;
+
+            foreach(char c in password)
+            {
+                if(num.Contains(c)){
+                    numCounter++;
+                }
+                if(ch.Contains(c)){
+                    charCounter++;
+                }
+                if(special.Contains(c)){
+                    specialCounter++;
+                }
+            }
+            if(numCounter > 0 && charCounter > 0 && specialCounter > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         [HttpPost("registration")]
         public IActionResult Registration(RegUser form)
         {
@@ -64,9 +90,10 @@ namespace DotNet_Belt.Controllers
                     return View("Index");
                 }
 
-                int[] num = new int[]{1,2,3,4,5,6,7,8,9,0};
-                char[] ch = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k'};
-                char[] special = new char[]{'!','@','#'};
+                if(!IsPasswordValid(form.RegPassword)){
+                    ModelState.AddModelError("RegPassword", "The password is not strong enough.");
+                    return View("Index");
+                }
 
                 PasswordHasher<RegUser> Hasher = new PasswordHasher<RegUser>();
                 form.RegPassword = Hasher.HashPassword(form, form.RegPassword);
@@ -89,11 +116,8 @@ namespace DotNet_Belt.Controllers
             int? UserID = HttpContext.Session.GetInt32("UserID");
             if(UserID is null)
                 return RedirectToAction("Index");
-
-            // User UserInfo = dbContext.Users.SingleOrDefault(u => u.UserId == UserID);
             
-            // return RedirectToAction("Dashboard", "DojoActivity");
-            return RedirectToAction("GetActivities");
+            return RedirectToAction("GetActivities", "Activity");
         }
 
         [HttpGet("logout")]
@@ -101,163 +125,6 @@ namespace DotNet_Belt.Controllers
         {
             HttpContext.Session.Remove("UserID");
             return View("Index");
-        }
-
-
-
-
-        public bool IsUserInSession()
-        {
-            int? UserID = HttpContext.Session.GetInt32("UserID");
-            if(UserID is null){
-                return false;
-            }
-            return true;
-        }
-
-
-        [HttpGet("Activities")]
-        public IActionResult GetActivities()
-        {
-            if(!IsUserInSession())
-                return RedirectToAction("Index", "User");
-
-            List<User> users = dbContext.Users.ToList();
-
-            DateTime t = DateTime.Now;
-
-            List<DojoActivity> Activites = dbContext.Activities
-                .Include(a => a.UserActivity)
-                .ThenInclude(b => b.User)
-                .Where(d => d.ActivityDate > t)
-                .OrderByDescending(e => e.CreatedAt)
-                .ToList();
-            
-            UserActivityRel model = new UserActivityRel();
-            model.activities = Activites;
-            model.Users = users;
-
-            return View("ActivitiesList", model);
-        }
-
-        [HttpGet("GetActivityRegForm")]
-        public IActionResult GetActivityRegForm()
-        {
-            if(!IsUserInSession())
-                return RedirectToAction("Index", "User");
-
-            return View("NewActivity");
-        }
-
-        [HttpPost("NewActivity")]
-        public IActionResult NewActivity(NewActivity form)
-        {
-            if(!IsUserInSession())
-                return RedirectToAction("Index", "User");
-
-            System.Console.WriteLine(form.Duration);
-            System.Console.WriteLine(form.ActivityTime);
-            System.Console.WriteLine(form.ActivityDate);
-            System.Console.WriteLine(form.Duration == 0);
-            if(form.Duration == 0){
-                ModelState.AddModelError("Duration", "Invalid User");
-                return View("NewActivity");
-            }
-           
-
-            if(ModelState.IsValid){
-
-                int? UserID = HttpContext.Session.GetInt32("UserID");
-                DojoActivity activity = new DojoActivity(form);
-                activity.CreatedBy = (int)UserID;
-                User user = dbContext.Users.FirstOrDefault(u => u.UserId == UserID);
-                activity.User = user;
-                
-                dbContext.Add(activity);
-                dbContext.SaveChanges();
-
-                return RedirectToAction("GetActivities");
-            }
-
-            return View("NewActivity");
-        }
-
-        [HttpGet("ActivityDetail/{ActivityId}")]
-        public IActionResult ActivityDetail(int ActivityId)
-        {
-            if(!IsUserInSession())
-                return RedirectToAction("Index", "User");
-            
-            List<User> users = dbContext.Users.ToList();
-
-            DojoActivity activity = dbContext.Activities
-                .Include(a => a.UserActivity)
-                .ThenInclude(a => a.User)
-                .FirstOrDefault(a => a.ActivityId == ActivityId);
-
-            UserActivityRel model = new UserActivityRel();
-            model.Activity = activity;
-            model.Users = users;
-
-            return View(model);
-        }
-
-        [HttpGet("JoinActivity/{ActivityId}")]
-        public IActionResult JoinActivity(int ActivityId)
-        {
-            if(!IsUserInSession())
-                return RedirectToAction("Index", "User");
-
-            int? UserID = HttpContext.Session.GetInt32("UserID");
-
-            // List<UserActivity> activityList = dbContext.UserActivity
-            //     .Include(a => a.DojoActivity)
-            //     .ThenInclude(b => b.UserActivity)
-            //     .Where(c => c.UserId == UserID)
-            //     .ToList();
-
-            // foreach(var i in activityList)
-            // {
-            //     if(i.DojoActivity.ActivityDate )
-            // }
-            
-            User userAdd = dbContext.Users.FirstOrDefault(u => u.UserId == UserID);
-            UserActivity user = new UserActivity();
-            user.UserId = (int)UserID;
-            user.ActivityId = ActivityId;
-
-            dbContext.UserActivity.Add(user);
-            dbContext.SaveChanges();
-            return RedirectToAction("GetActivities");
-        }
-
-        [HttpGet("DeleteActivity/{ActivityId}")]
-        public IActionResult DeleteActivity(int ActivityId)
-        {
-            if(!IsUserInSession())
-                return RedirectToAction("Index", "User");
-
-            DojoActivity activity = dbContext.Activities
-                .FirstOrDefault(a => a.ActivityId == ActivityId);
-
-            dbContext.Activities.Remove(activity);
-            dbContext.SaveChanges();
-            return RedirectToAction("GetActivities");
-        }
-
-        [HttpGet("DeleteJoin/{ActivityId}")]
-        public IActionResult DeleteJoin(int ActivityId)
-        {
-            if(!IsUserInSession())
-                return RedirectToAction("Index", "User");
-
-            int? UserID = HttpContext.Session.GetInt32("UserID");
-            UserActivity user = dbContext.UserActivity
-                .FirstOrDefault(u => u.ActivityId == ActivityId && u.UserId == UserID);
-
-            dbContext.UserActivity.Remove(user);
-            dbContext.SaveChanges();
-            return RedirectToAction("GetActivities");
         }
 
     }

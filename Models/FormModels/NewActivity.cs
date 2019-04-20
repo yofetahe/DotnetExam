@@ -16,10 +16,10 @@ namespace DotNet_Belt.Models
         public TimeSpan ActivityTime { get; set; }
 
         [Display(Name="Date")]
-        [CustomDate(ErrorMessage="Date must be in the future")]
         [DataType(DataType.Date)]
         [Required(ErrorMessage="Date is required.")]
-        [CustomTimeSpan(ErrorMessage="Some value is required")]
+        [CustomDate(ErrorMessage="Date must be in the future")]
+        [CustomNullDateAttribute(ErrorMessage="Some value is required")]
         public DateTime ActivityDate { get; set; }
 
         [Display(Name="Duration")]

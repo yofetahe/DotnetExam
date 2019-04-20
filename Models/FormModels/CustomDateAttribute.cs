@@ -19,6 +19,22 @@ namespace DotNet_Belt.Models
         }
     }
 
+    public class CustomNullDateAttribute : ValidationAttribute
+    {
+        public CustomNullDateAttribute()
+        {
+        }
+        public override bool IsValid(object value)
+        {
+            var dt = (DateTime)value;
+            if(dt == DateTime.MinValue)
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
     public class CustomTimeSpanAttribute : ValidationAttribute
     {
         public CustomTimeSpanAttribute()

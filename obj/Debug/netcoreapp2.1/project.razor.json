@@ -2686,6 +2686,16 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "Views\\Activity\\ActivityDetail.cshtml",
+      "TargetPath": "Views\\Activity\\ActivityDetail.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "Views\\Activity\\ActivitiesList.cshtml",
+      "TargetPath": "Views\\Activity\\ActivitiesList.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "Views\\User\\RegistrationPartial.cshtml",
       "TargetPath": "Views\\User\\RegistrationPartial.cshtml",
       "FileKind": "mvc"
@@ -2701,16 +2711,6 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "Views\\User\\ActivitiesList.cshtml",
-      "TargetPath": "Views\\User\\ActivitiesList.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "Views\\Activity\\Index.cshtml",
-      "TargetPath": "Views\\Activity\\Index.cshtml",
-      "FileKind": "mvc"
-    },
-    {
       "FilePath": "Views\\Shared\\_Layout.cshtml",
       "TargetPath": "Views\\Shared\\_Layout.cshtml",
       "FileKind": "mvc"
@@ -2721,18 +2721,8 @@
       "FileKind": "mvc"
     },
     {
-      "FilePath": "Views\\User\\success.cshtml",
-      "TargetPath": "Views\\User\\success.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "Views\\User\\ActivityDetail.cshtml",
-      "TargetPath": "Views\\User\\ActivityDetail.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "Views\\User\\NewActivity.cshtml",
-      "TargetPath": "Views\\User\\NewActivity.cshtml",
+      "FilePath": "Views\\Activity\\NewActivity.cshtml",
+      "TargetPath": "Views\\Activity\\NewActivity.cshtml",
       "FileKind": "mvc"
     },
     {
